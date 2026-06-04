@@ -41,6 +41,32 @@
             white-space: nowrap;
         }
 
+        .icon-item {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+            color: #0d6efd;
+            vertical-align: middle;
+        }
+
+        .checkmark-list .item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 0.75rem;
+        }
+
+        .checkmark-list .item .icon-item {
+            color: #198754;
+            font-size: 1.2rem;
+            min-width: 1.6rem;
+        }
+
+        .checkmark-list .item .in {
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #000 !important;
+        }
+
         .subtitle {
             font-size: 1.25rem !important;
         }
@@ -117,60 +143,42 @@
 
         <div class="section mt-3">
             <div class="section-title">Ringkasan Layanan</div>
-            <div class="listview">
+            <div class="listview checkmark-list">
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="business-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">Pembuatan PT perorangan</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">Izin operasional</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="people-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">SIP Apoteker</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="shield-checkmark-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">SIP TTK</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="clipboard-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">Pembuatan proposal Apotek</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="reader-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">Pembuatan SOP</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="color-palette-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">Desain ruangan sesuai ketentuan</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="people-circle-outline"></ion-icon>
-                    </div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
                     <div class="in">Pencarian SDM wajib jika belum ada</div>
                 </a>
                 <a href="#" class="item">
-                    <div class="icon-box bg-primary">
-                        <ion-icon name="location-outline"></ion-icon>
-                    </div>
-                    <div class="in">Pendampingan visitas Dinkes (Jabodetabek)</div>
+                    <ion-icon name="checkmark-sharp" class="icon-item"></ion-icon>
+                    <div class="in">Pendampingan saat visitas Dinkes (Jabodetabek)</div>
                 </a>
             </div>
         </div>
