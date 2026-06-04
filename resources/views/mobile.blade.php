@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{{ asset('mobilekit/assets/css/style.css') }}">
     <style>
         html {
-            font-size: 20px;
+            font-size: 16px;
         }
 
         body,
@@ -33,6 +33,12 @@
 
         .title {
             font-size: 2.4rem !important;
+        }
+
+        .price-title {
+            font-size: 1.6rem !important;
+            line-height: 1.1;
+            white-space: nowrap;
         }
 
         .subtitle {
@@ -98,7 +104,7 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="text-small text-muted">Biaya pengurusan apotek mulai</div>
-                            <div class="title">Rp 12.000.000</div>
+                            <div class="price-title">Rp 12.000.000</div>
                         </div>
                         <div class="col-4 text-end align-self-center">
                             <span class="badge badge-success">Terjangkau</span>
