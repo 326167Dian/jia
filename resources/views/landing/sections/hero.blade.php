@@ -23,6 +23,7 @@
         <h2 class="title-center" style="font-family:'Roboto Condensed',sans-serif;font-size:clamp(1.3rem,2.8vw,2.2rem);margin-top:14px;">TETAP SAJA OMSET TIDAK NAIK NAIK</h2>
 
         <div class="btn-row">
+            <a class="btn btn-green" href="{{ url('/mobile') }}">KONSULTASI PERIZINAN</a>
             <a class="btn btn-orange" href="#detil">Lihat Lebih Detil</a>
         </div>
     </div>
