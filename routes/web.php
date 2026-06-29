@@ -4,11 +4,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    return view('landing-mysifa');
+});
+
+Route::get('/welcome', function () {
     return view('welcome');
 });
 
 Route::get('/mobile', function () {
     return view('mobile');
+});
+
+Route::get('/landing-mysifa', function () {
+    return view('landing-mysifa');
 });
 
 Route::post('/mobile/contact', function (Request $request) {
