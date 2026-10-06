@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('landing-mysifa');
+    return view('mysifa-ecommerce');
 });
 
 Route::get('/welcome', function () {
@@ -17,6 +17,10 @@ Route::get('/mobile', function () {
 
 Route::get('/landing-mysifa', function () {
     return view('landing-mysifa');
+});
+
+Route::get('/ecommerce', function () {
+    return view('mysifa-ecommerce');
 });
 
 Route::post('/mobile/contact', function (Request $request) {
