@@ -125,7 +125,7 @@
           <div class="field">
             @if ($pharmacy->logo_path)
               <div class="logo-preview">
-                <img src="{{ asset('storage/'.$pharmacy->logo_path) }}" alt="Logo saat ini">
+                <img src="{{ asset('uploads/'.$pharmacy->logo_path) }}" alt="Logo saat ini">
                 <span class="hint">Logo saat ini. Upload file baru untuk mengganti.</span>
               </div>
             @endif

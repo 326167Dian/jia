@@ -47,6 +47,18 @@ return [
             'report' => false,
         ],
 
+        // Disk upload tanpa perlu `php artisan storage:link` — file disimpan
+        // langsung di dalam public/uploads sehingga tetap bisa diakses walau
+        // hosting tidak mengizinkan pembuatan symlink.
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/uploads',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

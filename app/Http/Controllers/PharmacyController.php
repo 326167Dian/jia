@@ -52,7 +52,7 @@ class PharmacyController extends Controller
         $pharmacy->fill($data);
 
         if ($request->hasFile('logo')) {
-            $pharmacy->logo_path = $request->file('logo')->store('logo-apotek', 'public');
+            $pharmacy->logo_path = $request->file('logo')->store('logo-apotek', 'uploads');
         }
 
         $pharmacy->save();

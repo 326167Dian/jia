@@ -64,7 +64,7 @@ class PromoOrderController extends Controller
             }
         }
 
-        $proofPath = $request->file('proof')->store('bukti-transfer', 'public');
+        $proofPath = $request->file('proof')->store('bukti-transfer', 'uploads');
 
         $order = PromoOrder::create([
             'order_code' => 'MYS-'.strtoupper(Str::random(8)),
