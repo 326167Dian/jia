@@ -33,7 +33,7 @@
                             <tr>
                                 <td>
                                     @if ($order->proof_path)
-                                        <img src="{{ asset('uploads/'.$order->proof_path) }}" alt="Bukti transfer {{ $order->order_code }}"
+                                        <img src="{{ asset('media/'.$order->proof_path) }}" alt="Bukti transfer {{ $order->order_code }}"
                                              class="proof-thumb"
                                              data-bs-toggle="modal" data-bs-target="#proofModal"
                                              data-title="{{ $order->order_code }} — {{ $order->name }}"

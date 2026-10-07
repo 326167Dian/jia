@@ -48,15 +48,29 @@ return [
         ],
 
         // Disk upload tanpa perlu `php artisan storage:link` — file disimpan
-        // langsung di dalam public/uploads sehingga tetap bisa diakses walau
-        // hosting tidak mengizinkan pembuatan symlink.
+        // langsung di dalam public/media sehingga tetap bisa diakses walau
+        // hosting tidak mengizinkan pembuatan symlink. Nama folder sengaja
+        // dihindarkan dari kata "uploads" (beberapa hosting memblokir akses
+        // langsung ke folder bernama itu), dan permission file/folder diset
+        // eksplisit 644/755 supaya pasti bisa dibaca web server meski umask
+        // PHP di hosting berbeda-beda.
         'uploads' => [
             'driver' => 'local',
-            'root' => public_path('uploads'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/uploads',
+            'root' => public_path('media'),
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/media',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0600,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0700,
+                ],
+            ],
         ],
 
         's3' => [

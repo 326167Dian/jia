@@ -59,7 +59,7 @@
                             <tr>
                                 <td>
                                     @if ($order->proof_path)
-                                        <img src="{{ asset('uploads/'.$order->proof_path) }}" alt="Bukti transfer {{ $order->order_code }}" class="proof-thumb" data-bs-toggle="modal" data-bs-target="#proofModal" onclick="document.getElementById('proofModalImg').src=this.src">
+                                        <img src="{{ asset('media/'.$order->proof_path) }}" alt="Bukti transfer {{ $order->order_code }}" class="proof-thumb" data-bs-toggle="modal" data-bs-target="#proofModal" onclick="document.getElementById('proofModalImg').src=this.src">
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
