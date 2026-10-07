@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Login Admin - MySIFA</title>
     <link rel="shortcut icon" href="{{ asset('backend-assets/images/logo/favicon.ico') }}">
-    <link href="{{ asset('backend-assets/css/app.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('backend-assets/css/app.min.css') }}?v={{ @filemtime(public_path('backend-assets/css/app.min.css')) }}" rel="stylesheet">
 </head>
 <body>
     <div class="auth-full-height">
