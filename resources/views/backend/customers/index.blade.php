@@ -61,6 +61,11 @@
                                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#customerModal" data-customer='@json($detail)'>
                                         <i class="feather icon-eye"></i> Detail
                                     </button>
+                                    @if ($pharmacy)
+                                        <a href="{{ route('admin.invoice.show', $customer) }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                            <i class="feather icon-printer"></i> Invoice
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\PromoOrderController as AdminPromoOrderController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
+use App\Http\Controllers\InvoiceVerificationController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PromoOrderController;
 use Illuminate\Http\Request;
@@ -54,6 +56,9 @@ Route::get('/promo/sukses/{orderCode}', [PromoOrderController::class, 'success']
 Route::get('/data-apotek/{orderCode}', [PharmacyController::class, 'edit'])->name('pharmacy.edit');
 Route::post('/data-apotek/{orderCode}', [PharmacyController::class, 'update'])->name('pharmacy.update');
 
+// Verifikasi keaslian invoice (publik, diakses lewat scan QR di invoice)
+Route::get('/verifikasi-invoice/{orderCode}', [InvoiceVerificationController::class, 'show'])->name('invoice.verify');
+
 // Member login (pelanggan yang sudah diverifikasi)
 Route::prefix('member')->name('member.')->group(function () {
     Route::get('/login', [MemberAuthController::class, 'showLogin'])->name('login');
@@ -88,5 +93,7 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
         Route::post('/pembayaran', [PaymentSettingController::class, 'update'])->name('payment.update');
 
         Route::get('/customer', [CustomerController::class, 'index'])->name('customers.index');
+
+        Route::get('/invoice/{order}', [InvoiceController::class, 'show'])->name('invoice.show');
     });
 });

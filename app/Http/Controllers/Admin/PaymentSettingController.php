@@ -20,6 +20,9 @@ class PaymentSettingController extends Controller
         $data = $request->validate([
             'product_name' => ['required', 'string', 'max:150'],
             'amount' => ['required', 'integer', 'min:1000'],
+            'bank_name' => ['required', 'string', 'max:100'],
+            'bank_account' => ['required', 'string', 'max:50'],
+            'bank_holder' => ['required', 'string', 'max:150'],
         ]);
 
         $setting = PaymentSetting::current();

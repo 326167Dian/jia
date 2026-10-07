@@ -67,7 +67,7 @@
         <div class="bank-box">
           Upload bukti transfer sesuai nominal di atas.<br>
           Transfer ke rekening berikut:<br>
-          <b>{{ config('services.promo_bank.name') }} {{ config('services.promo_bank.account') }} a/n {{ config('services.promo_bank.holder') }}</b><br>
+          <b>{{ $setting->bank_name }} {{ $setting->bank_account }} a/n {{ $setting->bank_holder }}</b><br>
           Akun akan diverifikasi oleh admin setelah bukti transfer diterima.
         </div>
 

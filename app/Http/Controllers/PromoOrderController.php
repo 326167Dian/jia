@@ -12,9 +12,9 @@ class PromoOrderController extends Controller
 {
     public function create()
     {
-        $amount = PaymentSetting::current()->amount;
+        $setting = PaymentSetting::current();
 
-        return view('promo.create', ['amount' => $amount]);
+        return view('promo.create', ['amount' => $setting->amount, 'setting' => $setting]);
     }
 
     public function checkVoucher(Request $request)
