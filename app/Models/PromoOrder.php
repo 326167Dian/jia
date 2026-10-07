@@ -50,4 +50,19 @@ class PromoOrder extends Authenticatable
     {
         return $this->status === 'verified' && ! empty($this->password);
     }
+
+    public function whatsappPhone(): string
+    {
+        $digits = preg_replace('/\D/', '', $this->phone);
+
+        if (str_starts_with($digits, '0')) {
+            return '62'.substr($digits, 1);
+        }
+
+        if (str_starts_with($digits, '62')) {
+            return $digits;
+        }
+
+        return '62'.$digits;
+    }
 }

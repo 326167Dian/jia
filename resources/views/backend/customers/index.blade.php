@@ -61,6 +61,15 @@
                                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#customerModal" data-customer='@json($detail)'>
                                         <i class="feather icon-eye"></i> Detail
                                     </button>
+                                    @if ($customer->status === 'verified')
+                                        @php
+                                            $dataApotekUrl = route('pharmacy.edit', $customer->order_code);
+                                            $waText = rawurlencode("Halo {$customer->name}, pembayaran promo MySIFA Anda sudah diverifikasi.\n\nSilakan lengkapi data apotek & buat password login member Anda di link berikut:\n{$dataApotekUrl}");
+                                        @endphp
+                                        <a href="https://wa.me/{{ $customer->whatsappPhone() }}?text={{ $waText }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                                            <i class="feather icon-send"></i> Kirim Link
+                                        </a>
+                                    @endif
                                     @if ($pharmacy)
                                         <a href="{{ route('admin.invoice.show', $customer) }}" target="_blank" class="btn btn-sm btn-outline-success">
                                             <i class="feather icon-printer"></i> Invoice

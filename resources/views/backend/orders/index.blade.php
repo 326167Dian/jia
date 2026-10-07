@@ -65,6 +65,19 @@
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-danger">Tolak</button>
                                         </form>
+                                    @elseif ($order->status === 'verified')
+                                        @php
+                                            $dataApotekUrl = route('pharmacy.edit', $order->order_code);
+                                            $waText = rawurlencode("Halo {$order->name}, pembayaran promo MySIFA Anda sudah diverifikasi.\n\nSilakan lengkapi data apotek & buat password login member Anda di link berikut:\n{$dataApotekUrl}");
+                                        @endphp
+                                        <a href="https://wa.me/{{ $order->whatsappPhone() }}?text={{ $waText }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">
+                                            <i class="feather icon-send"></i> Kirim Link
+                                        </a>
+                                        @if ($order->pharmacy)
+                                            <a href="{{ route('admin.invoice.show', $order) }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                                <i class="feather icon-printer"></i> Invoice
+                                            </a>
+                                        @endif
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif

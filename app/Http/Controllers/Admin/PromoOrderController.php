@@ -10,7 +10,8 @@ class PromoOrderController extends Controller
 {
     public function index(Request $request)
     {
-        $orders = PromoOrder::when($request->status, function ($query, $status) {
+        $orders = PromoOrder::with('pharmacy')
+            ->when($request->status, function ($query, $status) {
                 $query->where('status', $status);
             })
             ->latest()
