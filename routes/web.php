@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Controllers\InvoiceVerificationController;
+use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PromoOrderController;
 use Illuminate\Http\Request;
@@ -45,6 +46,14 @@ Route::post('/mobile/contact', function (Request $request) {
 
     return back()->with('success', 'Terima kasih! Pesan Anda telah terkirim. Kami akan segera menghubungi Anda.');
 });
+
+// Serve file upload (bukti transfer, logo apotek) lewat PHP — tidak bergantung
+// pada web server mengenali file statis baru secara langsung (menghindari
+// masalah cache/stat di beberapa hosting), mengikuti pola yang sudah terbukti
+// jalan di project ebook.
+Route::get('/media/{path}', [MediaFileController::class, 'show'])
+    ->where('path', '.*')
+    ->name('media.show');
 
 // Promo checkout (public)
 Route::get('/promo', [PromoOrderController::class, 'create'])->name('promo.create');

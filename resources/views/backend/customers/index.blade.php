@@ -43,7 +43,7 @@
                                     'nama_pemilik' => $pharmacy->nama_pemilik ?? '-',
                                     'telp_pemilik' => $pharmacy->telp_pemilik ?? '-',
                                     'alamat_pemilik' => $pharmacy->alamat_pemilik ?? '-',
-                                    'logo' => $pharmacy && $pharmacy->logo_path ? asset('media/'.$pharmacy->logo_path) : null,
+                                    'logo' => $pharmacy && $pharmacy->logo_path ? route('media.show', $pharmacy->logo_path) : null,
                                 ];
                             @endphp
                             <tr>

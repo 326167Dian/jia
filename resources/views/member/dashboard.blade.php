@@ -70,7 +70,7 @@
         <div class="group-title">Data Apotek</div>
         @if ($p->logo_path)
           <div class="logo-box">
-            <img src="{{ asset('media/'.$p->logo_path) }}" alt="Logo apotek">
+            <img src="{{ route('media.show', $p->logo_path) }}" alt="Logo apotek">
             <span class="text-muted" style="font-size:13px">Logo Apotek</span>
           </div>
         @endif
