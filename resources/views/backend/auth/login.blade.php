@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Login Admin - MySIFA</title>
-    <link rel="shortcut icon" href="{{ asset('backend-assets/images/logo/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}">
     <link href="{{ asset('backend-assets/css/app.min.css') }}?v={{ @filemtime(public_path('backend-assets/css/app.min.css')) }}" rel="stylesheet">
 </head>
 <body>
@@ -27,7 +27,7 @@
                     <div class="w-100">
                         <div class="d-flex justify-content-center mt-3">
                             <div class="text-center logo">
-                                <img alt="logo" class="img-fluid" src="{{ asset('backend-assets/images/logo/logo.png') }}" style="height: 70px;">
+                                <img alt="logo" class="img-fluid" src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" style="height: 90px;">
                             </div>
                         </div>
                         <h4 class="text-center mt-4 mb-0">Masuk sebagai Admin</h4>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>@yield('title', 'Dashboard') - MySIFA Admin</title>
-    <link rel="shortcut icon" href="{{ asset('backend-assets/images/logo/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}">
     <link href="{{ asset('backend-assets/css/app.min.css') }}?v={{ @filemtime(public_path('backend-assets/css/app.min.css')) }}" rel="stylesheet">
     @stack('styles')
 </head>
@@ -68,7 +68,7 @@
             <div class="side-nav vertical-menu nav-menu-light scrollable">
                 <div class="nav-logo">
                     <div class="w-100 logo">
-                        <img class="img-fluid" src="{{ asset('backend-assets/images/logo/logo.png') }}" style="max-height: 70px;" alt="logo">
+                        <img class="img-fluid" src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" style="max-height: 70px;" alt="logo">
                     </div>
                     <div class="mobile-close">
                         <i class="icon-arrow-left feather"></i>
