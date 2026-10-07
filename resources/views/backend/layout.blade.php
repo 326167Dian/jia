@@ -67,8 +67,8 @@
             <!-- Side Nav -->
             <div class="side-nav vertical-menu nav-menu-light scrollable">
                 <div class="nav-logo">
-                    <div class="w-100 logo">
-                        <img class="img-fluid" src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" style="max-height: 70px;" alt="logo">
+                    <div class="w-100 d-flex justify-content-center">
+                        <img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo-full.png') }}" style="width:150px;max-width:100%;height:auto;" alt="logo">
                     </div>
                     <div class="mobile-close">
                         <i class="icon-arrow-left feather"></i>

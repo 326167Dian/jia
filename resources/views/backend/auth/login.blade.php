@@ -26,9 +26,7 @@
                 <div class="d-flex h-100 align-items-center p-5">
                     <div class="w-100">
                         <div class="d-flex justify-content-center mt-3">
-                            <div class="text-center logo">
-                                <img alt="logo" class="img-fluid" src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" style="height: 90px;">
-                            </div>
+                            <img alt="logo" src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo-full.png') }}" style="width:220px;max-width:100%;height:auto;">
                         </div>
                         <h4 class="text-center mt-4 mb-0">Masuk sebagai Admin</h4>
                         <div class="mt-4">
