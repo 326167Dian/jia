@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'promo_bank' => [
+        'name' => env('PROMO_BANK_NAME', 'GANTI_NAMA_BANK'),
+        'account' => env('PROMO_BANK_ACCOUNT', 'GANTI_NOMOR_REKENING'),
+        'holder' => env('PROMO_BANK_HOLDER', 'GANTI_ATAS_NAMA'),
+        'whatsapp' => env('PROMO_WHATSAPP', '6281296298139'),
+    ],
+
 ];
