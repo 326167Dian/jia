@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="MySIFA Official">
 
   <link rel="icon" href="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}">
-  <link rel="stylesheet" href="{{ asset('mysifa-ecommerce-site/css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('mysifa-ecommerce-site/css/style.css') }}?v={{ @filemtime(public_path('mysifa-ecommerce-site/css/style.css')) }}">
 </head>
 <body>
 <header class="site-header">
@@ -164,6 +164,6 @@
   <span class="wa-float-label">Konsultasi</span>
 </a>
 
-<script src="{{ asset('mysifa-ecommerce-site/js/app.js') }}"></script>
+<script src="{{ asset('mysifa-ecommerce-site/js/app.js') }}?v={{ @filemtime(public_path('mysifa-ecommerce-site/js/app.js')) }}"></script>
 </body>
 </html>
