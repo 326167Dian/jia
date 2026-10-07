@@ -31,7 +31,7 @@
   <div class="wrap">
     <div class="box">
       <div class="head">
-        <img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" alt="MySIFA">
+        <img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo-full.png') }}" alt="MySIFA">
         <h1>Login Member</h1>
         <p>Khusus pelanggan yang pembayarannya sudah diverifikasi</p>
       </div>

@@ -21,13 +21,13 @@
 <body>
 <header class="site-header">
   <div class="container nav">
-    <a class="brand" href="#beranda"><img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" alt="MySIFA"></a>
+    <a class="brand" href="#beranda"><img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo-full.png') }}" alt="MySIFA"></a>
     <button class="menu-toggle" aria-label="Buka menu">☰</button>
     <nav id="mainNav">
       <a href="#beranda">Beranda</a>
       <a href="#keunggulan">Keunggulan</a>
       <a href="#fitur">51 Fitur</a>
-      <a href="#cta">Daftar</a>
+      <a href="{{ route('promo.create') }}">Daftar</a>
     </nav>
     <a class="btn btn-outline" href="{{ route('member.login') }}">Login Member</a>
   </div>
@@ -42,7 +42,7 @@
       <h2>Menjangkau Lebih Banyak Pelanggan</h2>
       <p class="lead">Kelola apotek Anda lebih mudah dengan sistem inventory modern dan toko online yang terintegrasi dalam satu aplikasi.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="#cta">Daftar Sekarang</a>
+        <a class="btn btn-primary" href="{{ route('promo.create') }}">Daftar Sekarang</a>
         <a class="btn btn-outline" href="#fitur">Lihat 51 Fitur</a>
       </div>
       <div class="stats">
@@ -145,7 +145,10 @@
       <h2>Aplikasi Paling Profesional Untuk Apotek</h2>
       <p>Aplikasi Inventory dan E-Commerce untuk Apotek dalam satu aplikasi profesional.</p>
     </div>
-    <a class="btn btn-white" href="{{ route('promo.create') }}">🎁 Ambil Promo Sekarang</a>
+    <div class="cta-action">
+      <div class="cta-arrows" aria-hidden="true"><span></span><span></span><span></span></div>
+      <a class="btn btn-white" href="{{ route('promo.create') }}">🎁 Ambil Promo Sekarang</a>
+    </div>
   </div>
 </section>
 </main>
@@ -157,7 +160,7 @@
   </div>
 </footer>
 
-<a class="wa-float" href="https://wa.me/6281296298139?text=Halo%20MySIFA,%20saya%20ingin%20konsultasi." target="_blank" rel="noopener" aria-label="Konsultasi via WhatsApp">
+<a class="wa-float" href="https://wa.me/6281296298139?text=Halo%20MySIFA,%20bolehkan%20saya%20melihat%20Demo%20Aplikasi%20%3F" target="_blank" rel="noopener" aria-label="Konsultasi via WhatsApp">
   <span class="wa-float-icon">
     <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.386.698 4.611 1.903 6.48L4 29l7.72-1.86A11.93 11.93 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3Zm6.98 17.07c-.3.84-1.74 1.62-2.4 1.68-.62.06-1.37.3-4.56-1.02-3.86-1.6-6.33-5.46-6.52-5.72-.19-.26-1.56-2.07-1.56-3.95s.98-2.81 1.33-3.2c.34-.37.75-.47 1-.47.25 0 .5.002.72.012.23.01.54-.088.84.65.3.74 1.02 2.57 1.11 2.76.09.19.15.41.03.67-.12.26-.18.42-.36.65-.18.23-.38.5-.54.68-.18.19-.37.4-.16.78.21.37.93 1.57 2.01 2.55 1.38 1.26 2.55 1.65 2.92 1.84.37.19.59.16.81-.1.22-.26.93-1.1 1.18-1.48.25-.37.5-.31.84-.19.34.12 2.16 1.04 2.53 1.23.37.19.62.28.71.44.09.16.09.93-.21 1.77Z"/></svg>
   </span>

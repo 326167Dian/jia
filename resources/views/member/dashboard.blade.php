@@ -36,7 +36,7 @@
 <body>
   <div class="topbar">
     <div class="container">
-      <img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo.jpg') }}" alt="MySIFA">
+      <img src="{{ asset('mysifa-ecommerce-site/assets/mysifa-logo-full.png') }}" alt="MySIFA">
       <form method="POST" action="{{ route('member.logout') }}">
         @csrf
         <button type="submit">Keluar</button>
