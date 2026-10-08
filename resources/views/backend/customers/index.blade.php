@@ -29,6 +29,7 @@
                                     'phone' => $customer->phone,
                                     'email' => $customer->email ?: '-',
                                     'amount' => 'Rp '.number_format($customer->final_amount, 0, ',', '.'),
+                                    'billing_period' => $customer->billingPeriodLabel(),
                                     'voucher_code' => $customer->voucher_code ?: '-',
                                     'status' => ucfirst($customer->status),
                                     'tanggal' => $customer->created_at->format('d/m/Y H:i'),
@@ -149,6 +150,7 @@
         html += '<h6>Pendaftaran</h6>';
         html += row('Kode Pendaftaran', d.order_code);
         html += row('Status', d.status);
+        html += row('Paket', d.billing_period);
         html += row('Total Bayar', d.amount);
         html += row('Kode Voucher', d.voucher_code);
         html += row('Tanggal Daftar', d.tanggal);

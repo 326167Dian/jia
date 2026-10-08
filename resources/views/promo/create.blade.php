@@ -15,6 +15,14 @@
     .promo-head h1{font-size:22px;margin:0 0 6px;font-weight:900}
     .promo-head p{margin:0;opacity:.92;font-size:14px}
     .promo-body{padding:26px 28px}
+    .period-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+    .period-toggle label{position:relative;display:block;border:2px solid #d8e3f2;border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+    .period-toggle input{position:absolute;opacity:0;pointer-events:none}
+    .period-toggle .name{display:block;font-weight:800;color:var(--navy);font-size:14px}
+    .period-toggle .price{display:block;font-weight:900;color:var(--blue);font-size:16px;margin-top:4px}
+    .period-toggle input:checked + .name-wrap,.period-toggle label.active{border-color:var(--blue);background:#f2f8ff}
+    .period-toggle label.active .name,.period-toggle label.active .price{color:var(--blue)}
+    .voucher-disabled{background:#f4f6fa;border:1px dashed #d8e3f2;border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--muted)}
     .promo-amount{background:#f2f8ff;border:1px dashed #9fc6f2;border-radius:14px;padding:16px;text-align:center;margin-bottom:18px}
     .promo-amount .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
     .promo-amount .value{font-size:30px;font-weight:950;color:var(--blue);margin-top:4px}
@@ -59,6 +67,19 @@
           </div>
         @endif
 
+        <div class="period-toggle">
+          <label id="period-label-yearly" class="active">
+            <input type="radio" name="billing_period" value="yearly" checked>
+            <span class="name">Tahunan</span>
+            <span class="price">Rp {{ number_format($amount, 0, ',', '.') }}</span>
+          </label>
+          <label id="period-label-monthly">
+            <input type="radio" name="billing_period" value="monthly">
+            <span class="name">Bulanan</span>
+            <span class="price">Rp {{ number_format($monthlyAmount, 0, ',', '.') }}</span>
+          </label>
+        </div>
+
         <div class="promo-amount" id="amount-box">
           <div class="label">Total Pembayaran</div>
           <div class="value" id="amount-value">Rp {{ number_format($amount, 0, ',', '.') }}</div>
@@ -89,13 +110,16 @@
             <input type="email" name="email" value="{{ old('email') }}">
           </div>
 
-          <div class="field">
+          <div class="field" id="voucher-field">
             <label>Kode Voucher (opsional)</label>
             <div class="voucher-row">
               <input type="text" name="voucher_code" id="voucher_code" value="{{ old('voucher_code') }}" placeholder="Masukkan kode voucher">
               <button type="button" id="btn-check-voucher">Cek Voucher</button>
             </div>
             <div id="voucher-msg" class="voucher-msg"></div>
+          </div>
+          <div class="field voucher-disabled" id="voucher-disabled-note" style="display:none">
+            🎟️ Kode voucher hanya berlaku untuk paket Tahunan.
           </div>
 
           <div class="field">
@@ -112,16 +136,57 @@
   </div>
 
   <script>
-    const amountValue = document.getElementById('amount-value');
     const amountBox = document.getElementById('amount-box');
     const voucherInput = document.getElementById('voucher_code');
     const voucherMsg = document.getElementById('voucher-msg');
     const btnCheck = document.getElementById('btn-check-voucher');
-    const originalAmount = {{ $amount }};
+    const voucherField = document.getElementById('voucher-field');
+    const voucherDisabledNote = document.getElementById('voucher-disabled-note');
+    const periodRadios = document.querySelectorAll('input[name="billing_period"]');
+    const periodLabels = {
+      yearly: document.getElementById('period-label-yearly'),
+      monthly: document.getElementById('period-label-monthly'),
+    };
+    const periodAmounts = {
+      yearly: {{ $amount }},
+      monthly: {{ $monthlyAmount }},
+    };
+
+    let currentPeriod = 'yearly';
 
     function formatRp(n) {
       return 'Rp ' + n.toLocaleString('id-ID');
     }
+
+    function resetAmountBox() {
+      amountBox.innerHTML = `
+        <div class="label">Total Pembayaran</div>
+        <div class="value" id="amount-value">${formatRp(periodAmounts[currentPeriod])}</div>
+      `;
+    }
+
+    function applyPeriod(period) {
+      currentPeriod = period;
+      periodLabels.yearly.classList.toggle('active', period === 'yearly');
+      periodLabels.monthly.classList.toggle('active', period === 'monthly');
+
+      voucherMsg.textContent = '';
+      voucherMsg.className = 'voucher-msg';
+      voucherInput.value = '';
+      resetAmountBox();
+
+      if (period === 'monthly') {
+        voucherField.style.display = 'none';
+        voucherDisabledNote.style.display = '';
+      } else {
+        voucherField.style.display = '';
+        voucherDisabledNote.style.display = 'none';
+      }
+    }
+
+    periodRadios.forEach((radio) => {
+      radio.addEventListener('change', () => applyPeriod(radio.value));
+    });
 
     btnCheck.addEventListener('click', async () => {
       const code = voucherInput.value.trim();
@@ -145,9 +210,10 @@
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
             'Accept': 'application/json',
           },
-          body: JSON.stringify({ code }),
+          body: JSON.stringify({ code, period: currentPeriod }),
         });
         const data = await res.json();
+        const originalAmount = periodAmounts[currentPeriod];
 
         if (data.valid) {
           voucherMsg.textContent = data.message;
@@ -160,10 +226,7 @@
         } else {
           voucherMsg.textContent = data.message;
           voucherMsg.classList.add('err');
-          amountBox.innerHTML = `
-            <div class="label">Total Pembayaran</div>
-            <div class="value">${formatRp(originalAmount)}</div>
-          `;
+          resetAmountBox();
         }
       } catch (e) {
         voucherMsg.textContent = 'Gagal mengecek voucher, coba lagi.';

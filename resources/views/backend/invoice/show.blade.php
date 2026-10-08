@@ -121,7 +121,7 @@
                     <tbody class="divide-y divide-gray-200 text-sm">
                         <tr>
                             <td class="py-4 px-2">
-                                <p class="font-bold text-gray-900 text-base" contenteditable="false">{{ $setting->product_name ?? 'MySIFA E-Commerce' }}</p>
+                                <p class="font-bold text-gray-900 text-base" contenteditable="false">{{ $setting->product_name ?? 'MySIFA E-Commerce' }} — Paket {{ $order->billingPeriodLabel() }}</p>
                                 <p class="text-xs text-gray-500 italic mt-1" contenteditable="false">Pendaftaran {{ $order->order_code }} a.n. {{ $order->name }}</p>
                             </td>
                             <td class="py-4 px-2 text-right font-bold text-gray-800 whitespace-nowrap text-base" contenteditable="false">

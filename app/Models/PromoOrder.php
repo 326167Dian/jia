@@ -16,6 +16,7 @@ class PromoOrder extends Authenticatable
         'email',
         'password',
         'amount',
+        'billing_period',
         'voucher_id',
         'voucher_code',
         'discount_amount',
@@ -44,6 +45,11 @@ class PromoOrder extends Authenticatable
     public function pharmacy()
     {
         return $this->hasOne(Pharmacy::class);
+    }
+
+    public function billingPeriodLabel(): string
+    {
+        return $this->billing_period === 'monthly' ? 'Bulanan' : 'Tahunan';
     }
 
     public function isMemberAccountActive(): bool

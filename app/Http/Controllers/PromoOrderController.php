@@ -14,14 +14,27 @@ class PromoOrderController extends Controller
     {
         $setting = PaymentSetting::current();
 
-        return view('promo.create', ['amount' => $setting->amount, 'setting' => $setting]);
+        return view('promo.create', [
+            'amount' => $setting->amount,
+            'monthlyAmount' => $setting->monthly_amount,
+            'setting' => $setting,
+        ]);
     }
 
     public function checkVoucher(Request $request)
     {
-        $request->validate(['code' => ['required', 'string']]);
+        $request->validate([
+            'code' => ['required', 'string'],
+            'period' => ['nullable', 'in:monthly,yearly'],
+        ]);
 
-        $amount = PaymentSetting::current()->amount;
+        $period = $request->input('period', 'yearly');
+
+        if ($period === 'monthly') {
+            return response()->json(['valid' => false, 'message' => 'Kode voucher hanya berlaku untuk paket Tahunan.']);
+        }
+
+        $amount = PaymentSetting::current()->amountFor($period);
         $voucher = Voucher::whereRaw('LOWER(code) = ?', [strtolower($request->code)])->first();
 
         if (! $voucher || ! $voucher->isValid()) {
@@ -45,15 +58,17 @@ class PromoOrderController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:150'],
+            'billing_period' => ['required', 'in:monthly,yearly'],
             'voucher_code' => ['nullable', 'string', 'max:50'],
             'proof' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
-        $amount = PaymentSetting::current()->amount;
+        $period = $data['billing_period'];
+        $amount = PaymentSetting::current()->amountFor($period);
         $discount = 0;
         $voucher = null;
 
-        if (! empty($data['voucher_code'])) {
+        if ($period === 'yearly' && ! empty($data['voucher_code'])) {
             $voucher = Voucher::whereRaw('LOWER(code) = ?', [strtolower($data['voucher_code'])])->first();
 
             if ($voucher && $voucher->isValid()) {
@@ -72,6 +87,7 @@ class PromoOrderController extends Controller
             'phone' => $data['phone'],
             'email' => $data['email'] ?? null,
             'amount' => $amount,
+            'billing_period' => $period,
             'voucher_id' => $voucher?->id,
             'voucher_code' => $voucher?->code,
             'discount_amount' => $discount,

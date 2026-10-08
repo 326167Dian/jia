@@ -3,7 +3,7 @@
 @section('title', 'Pembayaran')
 
 @section('content')
-    <div class="card" style="max-width:560px;">
+    <div class="card" style="max-width:680px;">
         <div class="card-body">
             <h5 class="mb-3">Pengaturan Harga Produk</h5>
             <p class="text-muted">Nilai ini menentukan nominal pembayaran yang tampil di halaman "Ambil Promo" customer.</p>
@@ -17,12 +17,25 @@
                     @error('product_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label">Harga (Rp)</label>
-                    <input type="number" name="amount" value="{{ old('amount', $setting->amount) }}" class="form-control @error('amount') is-invalid @enderror" min="1000" step="1000" required>
-                    @error('amount') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    <div class="form-text">Saat ini: Rp {{ number_format($setting->amount, 0, ',', '.') }}</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">Harga Tahunan (Rp)</label>
+                            <input type="number" name="amount" value="{{ old('amount', $setting->amount) }}" class="form-control @error('amount') is-invalid @enderror" min="1000" step="1000" required>
+                            @error('amount') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <div class="form-text">Saat ini: Rp {{ number_format($setting->amount, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">Harga Bulanan (Rp)</label>
+                            <input type="number" name="monthly_amount" value="{{ old('monthly_amount', $setting->monthly_amount) }}" class="form-control @error('monthly_amount') is-invalid @enderror" min="1000" step="1000" required>
+                            @error('monthly_amount') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <div class="form-text">Saat ini: Rp {{ number_format($setting->monthly_amount, 0, ',', '.') }}</div>
+                        </div>
+                    </div>
                 </div>
+                <p class="text-muted" style="margin-top:-8px;font-size:13px">Catatan: kode voucher hanya berlaku untuk paket Tahunan.</p>
 
                 <hr class="my-4">
                 <h6 class="mb-3">Rekening Tujuan Transfer</h6>

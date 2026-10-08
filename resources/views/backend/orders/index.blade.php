@@ -22,6 +22,7 @@
                             <th>Kode</th>
                             <th>Nama</th>
                             <th>No. HP</th>
+                            <th>Paket</th>
                             <th>Total Bayar</th>
                             <th>Status</th>
                             <th>Tanggal</th>
@@ -48,6 +49,7 @@
                                 <td>{{ $order->order_code }}</td>
                                 <td>{{ $order->name }}</td>
                                 <td>{{ $order->phone }}</td>
+                                <td><span class="badge bg-{{ $order->billing_period === 'monthly' ? 'info' : 'primary' }}">{{ $order->billingPeriodLabel() }}</span></td>
                                 <td>Rp {{ number_format($order->final_amount, 0, ',', '.') }}</td>
                                 <td>
                                     <span class="badge bg-{{ $order->status === 'verified' ? 'success' : ($order->status === 'rejected' ? 'danger' : 'warning') }}">
@@ -85,7 +87,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted">Belum ada pendaftaran.</td>
+                                <td colspan="9" class="text-center text-muted">Belum ada pendaftaran.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -156,9 +158,9 @@
     $(function () {
         $('#orders-table').DataTable({
             columnDefs: [
-                { orderable: false, searchable: false, targets: [0, 7] }
+                { orderable: false, searchable: false, targets: [0, 8] }
             ],
-            order: [[6, 'desc']],
+            order: [[7, 'desc']],
             language: {
                 search: 'Cari:',
                 lengthMenu: 'Tampilkan _MENU_ data',
