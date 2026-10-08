@@ -31,7 +31,7 @@
                             <div class="dropdown header-nav-item-select nav-profile">
                                 <div class="toggle-wrapper" id="nav-profile-dropdown" data-bs-toggle="dropdown">
                                     <div class="avatar avatar-circle avatar-image" style="width: 35px; height: 35px; line-height: 35px;">
-                                        <img src="{{ asset('backend-assets/images/avatars/thumb-1.jpg') }}" alt="">
+                                        <img src="{{ auth('admin')->user()->avatarUrl() }}" alt="">
                                     </div>
                                     <span class="fw-bold mx-1">{{ auth('admin')->user()->name }}</span>
                                     <i class="feather icon-chevron-down"></i>
@@ -40,7 +40,7 @@
                                     <div class="nav-profile-header">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-circle avatar-image">
-                                                <img src="{{ asset('backend-assets/images/avatars/thumb-1.jpg') }}" alt="">
+                                                <img src="{{ auth('admin')->user()->avatarUrl() }}" alt="">
                                             </div>
                                             <div class="d-flex flex-column ms-1">
                                                 <span class="fw-bold text-dark">{{ auth('admin')->user()->name }}</span>
@@ -48,6 +48,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <a href="{{ route('admin.profile.edit') }}" class="dropdown-item">
+                                        <div class="d-flex align-items-center">
+                                            <i class="font-size-lg me-2 feather icon-user"></i>
+                                            <span>Profil Saya</span>
+                                        </div>
+                                    </a>
                                     <form method="POST" action="{{ route('admin.logout') }}">
                                         @csrf
                                         <button type="submit" class="dropdown-item">

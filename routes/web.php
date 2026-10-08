@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PaymentSettingController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\PromoOrderController as AdminPromoOrderController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
@@ -102,6 +103,9 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
         Route::post('/pembayaran', [PaymentSettingController::class, 'update'])->name('payment.update');
 
         Route::get('/customer', [CustomerController::class, 'index'])->name('customers.index');
+
+        Route::get('/profil', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profil', [AdminProfileController::class, 'update'])->name('profile.update');
 
         Route::get('/invoice/{order}', [InvoiceController::class, 'show'])->name('invoice.show');
     });

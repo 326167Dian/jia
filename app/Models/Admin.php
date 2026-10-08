@@ -12,6 +12,7 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'avatar_path',
         'password',
     ];
 
@@ -25,5 +26,12 @@ class Admin extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function avatarUrl(): string
+    {
+        return $this->avatar_path
+            ? route('media.show', $this->avatar_path)
+            : asset('backend-assets/images/avatars/thumb-1.jpg');
     }
 }
