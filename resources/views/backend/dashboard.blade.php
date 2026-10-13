@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-3 col-6">
+        <div class="col-md col-6">
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted mb-1">Total Admin</div>
@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md col-6">
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted mb-1">Total Voucher</div>
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md col-6">
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted mb-1">Total Pendaftar Promo</div>
@@ -28,11 +28,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 col-6">
+        <div class="col-md col-6">
             <div class="card">
                 <div class="card-body">
                     <div class="text-muted mb-1">Menunggu Verifikasi</div>
                     <h3 class="mb-0 text-warning">{{ $stats['menunggu_verifikasi'] }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md col-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-muted mb-1">Reseller Menunggu</div>
+                    <h3 class="mb-0 text-warning">{{ $stats['reseller_menunggu'] }}</h3>
                 </div>
             </div>
         </div>

@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\PaymentSetting;
 use App\Models\PromoOrder;
+use App\Models\Reseller;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class PromoOrderController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
         $setting = PaymentSetting::current();
 
@@ -18,6 +19,7 @@ class PromoOrderController extends Controller
             'amount' => $setting->amount,
             'monthlyAmount' => $setting->monthly_amount,
             'setting' => $setting,
+            'referralCode' => $request->session()->get('referral_reseller_id'),
         ]);
     }
 
@@ -60,6 +62,7 @@ class PromoOrderController extends Controller
             'email' => ['nullable', 'email', 'max:150'],
             'billing_period' => ['required', 'in:monthly,yearly'],
             'voucher_code' => ['nullable', 'string', 'max:50'],
+            'referral_code' => ['nullable', 'integer'],
             'proof' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
@@ -67,6 +70,11 @@ class PromoOrderController extends Controller
         $amount = PaymentSetting::current()->amountFor($period);
         $discount = 0;
         $voucher = null;
+
+        $reseller = null;
+        if (! empty($data['referral_code'])) {
+            $reseller = Reseller::where('id', $data['referral_code'])->where('is_active', true)->first();
+        }
 
         if ($period === 'yearly' && ! empty($data['voucher_code'])) {
             $voucher = Voucher::whereRaw('LOWER(code) = ?', [strtolower($data['voucher_code'])])->first();
@@ -94,7 +102,10 @@ class PromoOrderController extends Controller
             'final_amount' => $amount - $discount,
             'proof_path' => $proofPath,
             'status' => 'pending',
+            'reseller_id' => $reseller?->id,
         ]);
+
+        $request->session()->forget('referral_reseller_id');
 
         return redirect()->route('promo.success', $order->order_code);
     }

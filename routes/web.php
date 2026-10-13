@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PaymentSettingController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\PromoOrderController as AdminPromoOrderController;
+use App\Http\Controllers\Admin\ResellerController as AdminResellerController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
@@ -15,6 +16,9 @@ use App\Http\Controllers\InvoiceVerificationController;
 use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PromoOrderController;
+use App\Http\Controllers\Reseller\AuthController as ResellerAuthController;
+use App\Http\Controllers\Reseller\DashboardController as ResellerDashboardController;
+use App\Models\Reseller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +84,29 @@ Route::prefix('member')->name('member.')->group(function () {
     });
 });
 
+// Reseller (pendaftaran, login, dashboard referral & komisi)
+Route::prefix('reseller')->name('reseller.')->group(function () {
+    Route::get('/login', [ResellerAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [ResellerAuthController::class, 'login']);
+    Route::get('/register', [ResellerAuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [ResellerAuthController::class, 'register'])->name('register.submit');
+    Route::post('/logout', [ResellerAuthController::class, 'logout'])->middleware('auth:reseller')->name('logout');
+
+    Route::middleware('auth:reseller')->group(function () {
+        Route::get('/pending', [ResellerAuthController::class, 'showPending'])->name('pending');
+        Route::get('/', [ResellerDashboardController::class, 'index'])->name('dashboard');
+    });
+});
+
+// Link referral pendek: /r/{id} — simpan kode referral ke session lalu arahkan ke form promo.
+Route::get('/r/{reseller}', function (Reseller $reseller) {
+    if ($reseller->is_active) {
+        session(['referral_reseller_id' => $reseller->id]);
+    }
+
+    return redirect()->route('promo.create');
+})->name('reseller.referral');
+
 // Admin backend
 Route::prefix('yusuf')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -108,5 +135,11 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
         Route::post('/profil', [AdminProfileController::class, 'update'])->name('profile.update');
 
         Route::get('/invoice/{order}', [InvoiceController::class, 'show'])->name('invoice.show');
+
+        Route::get('/reseller', [AdminResellerController::class, 'index'])->name('resellers.index');
+        Route::get('/reseller/{reseller}', [AdminResellerController::class, 'show'])->name('resellers.show');
+        Route::post('/reseller/{reseller}/approve', [AdminResellerController::class, 'approve'])->name('resellers.approve');
+        Route::post('/reseller/{reseller}/reject', [AdminResellerController::class, 'reject'])->name('resellers.reject');
+        Route::post('/reseller/{reseller}/order/{order}/komisi', [AdminResellerController::class, 'commission'])->name('resellers.commission');
     });
 });

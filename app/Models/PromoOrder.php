@@ -23,6 +23,10 @@ class PromoOrder extends Authenticatable
         'final_amount',
         'proof_path',
         'status',
+        'reseller_id',
+        'commission_amount',
+        'commission_proof_path',
+        'commission_paid_at',
     ];
 
     protected $hidden = [
@@ -34,12 +38,18 @@ class PromoOrder extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'commission_paid_at' => 'datetime',
         ];
     }
 
     public function voucher()
     {
         return $this->belongsTo(Voucher::class);
+    }
+
+    public function reseller()
+    {
+        return $this->belongsTo(Reseller::class);
     }
 
     public function pharmacy()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\PromoOrder;
+use App\Models\Reseller;
 use App\Models\Voucher;
 
 class DashboardController extends Controller
@@ -16,6 +17,7 @@ class DashboardController extends Controller
             'total_voucher' => Voucher::count(),
             'total_pendaftar' => PromoOrder::count(),
             'menunggu_verifikasi' => PromoOrder::where('status', 'pending')->count(),
+            'reseller_menunggu' => Reseller::where('is_active', false)->count(),
         ];
 
         $latestOrders = PromoOrder::latest()->take(5)->get();

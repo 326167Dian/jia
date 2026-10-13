@@ -12,9 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(function ($request) {
-            return $request->is('member*')
-                ? route('member.login')
-                : route('admin.login');
+            if ($request->is('member*')) {
+                return route('member.login');
+            }
+
+            if ($request->is('reseller*')) {
+                return route('reseller.login');
+            }
+
+            return route('admin.login');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

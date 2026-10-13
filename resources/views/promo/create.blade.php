@@ -110,6 +110,12 @@
             <input type="email" name="email" value="{{ old('email') }}">
           </div>
 
+          <div class="field">
+            <label>Kode Referral Reseller (opsional)</label>
+            <input type="number" name="referral_code" value="{{ old('referral_code', $referralCode) }}" placeholder="Kode dari reseller yang mengajak Anda">
+            <div class="hint">Terisi otomatis jika Anda membuka link dari reseller.</div>
+          </div>
+
           <div class="field" id="voucher-field">
             <label>Kode Voucher (opsional)</label>
             <div class="voucher-row">

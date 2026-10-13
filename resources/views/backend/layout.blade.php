@@ -118,6 +118,12 @@
                             <span class="nav-menu-item-title">Customer</span>
                         </a>
                     </li>
+                    <li class="nav-menu-item {{ request()->routeIs('admin.resellers.*') ? 'router-link-active' : '' }}">
+                        <a href="{{ route('admin.resellers.index') }}">
+                            <i class="feather icon-share-2"></i>
+                            <span class="nav-menu-item-title">Reseller</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
 

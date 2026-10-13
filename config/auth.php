@@ -2,6 +2,7 @@
 
 use App\Models\Admin;
 use App\Models\PromoOrder;
+use App\Models\Reseller;
 use App\Models\User;
 
 return [
@@ -54,6 +55,11 @@ return [
             'driver' => 'session',
             'provider' => 'members',
         ],
+
+        'reseller' => [
+            'driver' => 'session',
+            'provider' => 'resellers',
+        ],
     ],
 
     /*
@@ -87,6 +93,11 @@ return [
         'members' => [
             'driver' => 'eloquent',
             'model' => PromoOrder::class,
+        ],
+
+        'resellers' => [
+            'driver' => 'eloquent',
+            'model' => Reseller::class,
         ],
 
         // 'users' => [
