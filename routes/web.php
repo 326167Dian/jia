@@ -12,10 +12,14 @@ use App\Http\Controllers\Admin\ResellerController as AdminResellerController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
+use App\Http\Controllers\GdcPayWebhookController;
 use App\Http\Controllers\InvoiceVerificationController;
 use App\Http\Controllers\MediaFileController;
+use App\Http\Controllers\MidtransPaymentController;
+use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\PromoOrderController;
+use App\Http\Controllers\QrisPaymentController;
 use App\Http\Controllers\Reseller\AuthController as ResellerAuthController;
 use App\Http\Controllers\Reseller\DashboardController as ResellerDashboardController;
 use App\Models\Reseller;
@@ -65,6 +69,20 @@ Route::get('/promo', [PromoOrderController::class, 'create'])->name('promo.creat
 Route::post('/promo/cek-voucher', [PromoOrderController::class, 'checkVoucher'])->name('promo.check-voucher');
 Route::post('/promo', [PromoOrderController::class, 'store'])->name('promo.store');
 Route::get('/promo/sukses/{orderCode}', [PromoOrderController::class, 'success'])->name('promo.success');
+
+// QRIS Dinamis (GDC Pay) & Midtrans — siap pakai begitu kredensial diisi
+Route::post('/promo/qris', [QrisPaymentController::class, 'create'])->name('promo.qris.create');
+Route::get('/promo/qris/{reference}', [QrisPaymentController::class, 'show'])->name('promo.qris.show');
+Route::get('/promo/qris/{reference}/status', [QrisPaymentController::class, 'status'])->name('promo.qris.status');
+
+Route::post('/promo/midtrans', [MidtransPaymentController::class, 'create'])->name('promo.midtrans.create');
+Route::get('/promo/midtrans/{orderId}', [MidtransPaymentController::class, 'show'])->name('promo.midtrans.show');
+Route::get('/promo/midtrans/{orderId}/status', [MidtransPaymentController::class, 'status'])->name('promo.midtrans.status');
+
+// Webhook gateway pembayaran (dikecualikan dari CSRF, lihat bootstrap/app.php)
+Route::post('/webhooks/gdcpay/qris-notification', [GdcPayWebhookController::class, 'qrisNotification'])->name('gdcpay.webhook.qris');
+Route::post('/v1.0/access-token/b2b', [GdcPayWebhookController::class, 'issueAccessToken'])->name('gdcpay.webhook.token');
+Route::post('/webhooks/midtrans/notification', [MidtransWebhookController::class, 'notification'])->name('midtrans.webhook.notification');
 
 // Data apotek (diisi customer setelah pembayaran diverifikasi)
 Route::get('/data-apotek/{orderCode}', [PharmacyController::class, 'edit'])->name('pharmacy.edit');
