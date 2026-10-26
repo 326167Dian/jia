@@ -7,6 +7,7 @@ use App\Models\Reseller;
 use App\Services\GdcPayService;
 use App\Support\PromoPricing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class QrisPaymentController extends Controller
@@ -58,7 +59,16 @@ class QrisPaymentController extends Controller
         } catch (\Throwable $e) {
             $payment->delete();
 
-            return back()->with('error', 'Pembayaran QRIS otomatis sedang tidak tersedia. Silakan gunakan QRIS Statis / transfer manual.');
+            Log::error('gdcpay.generate_qr_failed', ['message' => $e->getMessage()]);
+
+            $message = 'Pembayaran QRIS otomatis sedang tidak tersedia. Silakan gunakan QRIS Statis / transfer manual.';
+
+            // Saat APP_DEBUG=true (lokal), tampilkan alasan teknis supaya mudah dicari penyebabnya.
+            if (config('app.debug')) {
+                $message .= ' [Detail: '.$e->getMessage().']';
+            }
+
+            return back()->withInput()->with('error', $message);
         }
 
         return redirect()->route('promo.qris.show', $payment->reference_no);

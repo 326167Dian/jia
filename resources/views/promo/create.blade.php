@@ -69,46 +69,52 @@
           </div>
         @endif
 
-        <div class="period-toggle">
-          <label id="period-label-yearly" class="active">
-            <input type="radio" name="billing_period" value="yearly" checked>
-            <span class="name">Tahunan</span>
-            <span class="price">Rp {{ number_format($amount, 0, ',', '.') }}</span>
-          </label>
-          <label id="period-label-monthly">
-            <input type="radio" name="billing_period" value="monthly">
-            <span class="name">Bulanan</span>
-            <span class="price">Rp {{ number_format($monthlyAmount, 0, ',', '.') }}</span>
-          </label>
-        </div>
-
-        <div class="promo-amount" id="amount-box">
-          <div class="label">Total Pembayaran</div>
-          <div class="value" id="amount-value">Rp {{ number_format($amount, 0, ',', '.') }}</div>
-        </div>
-
-        @if ($setting->payment_method === 'qris_static')
-          @if ($qrisImageUrl)
-            <div class="qris-box">
-              <img src="{{ $qrisImageUrl }}" alt="QRIS MySIFA">
-              <div class="hint">Scan QRIS di atas pakai aplikasi e-wallet / m-banking Anda.</div>
-            </div>
-          @endif
-          <div class="bank-box">
-            Upload bukti transfer sesuai nominal di atas.<br>
-            Atau transfer ke rekening berikut:<br>
-            <b>{{ $setting->bank_name }} {{ $setting->bank_account }} a/n {{ $setting->bank_holder }}</b><br>
-            Akun akan diverifikasi oleh admin setelah bukti transfer diterima.
-          </div>
-        @else
-          <div class="bank-box">
-            Pembayaran akan diproses otomatis lewat QRIS ({{ $setting->payment_method === 'gdcpay' ? 'GDC Pay' : 'Midtrans' }}).<br>
-            Setelah klik tombol di bawah, Anda akan diarahkan ke halaman QR — akun langsung aktif begitu pembayaran terkonfirmasi, tanpa perlu upload bukti transfer.
+        @if (session('error'))
+          <div class="error-list">
+            <ul><li>{{ session('error') }}</li></ul>
           </div>
         @endif
 
         <form method="POST" action="{{ $setting->payment_method === 'qris_static' ? route('promo.store') : ($setting->payment_method === 'gdcpay' ? route('promo.qris.create') : route('promo.midtrans.create')) }}" enctype="multipart/form-data">
           @csrf
+
+          <div class="period-toggle">
+            <label id="period-label-yearly" class="{{ old('billing_period', 'yearly') === 'yearly' ? 'active' : '' }}">
+              <input type="radio" name="billing_period" value="yearly" {{ old('billing_period', 'yearly') === 'yearly' ? 'checked' : '' }}>
+              <span class="name">Tahunan</span>
+              <span class="price">Rp {{ number_format($amount, 0, ',', '.') }}</span>
+            </label>
+            <label id="period-label-monthly">
+              <input type="radio" name="billing_period" value="monthly" {{ old('billing_period') === 'monthly' ? 'checked' : '' }}>
+              <span class="name">Bulanan</span>
+              <span class="price">Rp {{ number_format($monthlyAmount, 0, ',', '.') }}</span>
+            </label>
+          </div>
+
+          <div class="promo-amount" id="amount-box">
+            <div class="label">Total Pembayaran</div>
+            <div class="value" id="amount-value">Rp {{ number_format($amount, 0, ',', '.') }}</div>
+          </div>
+
+          @if ($setting->payment_method === 'qris_static')
+            @if ($qrisImageUrl)
+              <div class="qris-box">
+                <img src="{{ $qrisImageUrl }}" alt="QRIS MySIFA">
+                <div class="hint">Scan QRIS di atas pakai aplikasi e-wallet / m-banking Anda.</div>
+              </div>
+            @endif
+            <div class="bank-box">
+              Upload bukti transfer sesuai nominal di atas.<br>
+              Atau transfer ke rekening berikut:<br>
+              <b>{{ $setting->bank_name }} {{ $setting->bank_account }} a/n {{ $setting->bank_holder }}</b><br>
+              Akun akan diverifikasi oleh admin setelah bukti transfer diterima.
+            </div>
+          @else
+            <div class="bank-box">
+              Pembayaran akan diproses otomatis lewat QRIS ({{ $setting->payment_method === 'gdcpay' ? 'GDC Pay' : 'Midtrans' }}).<br>
+              Setelah klik tombol di bawah, Anda akan diarahkan ke halaman QR — akun langsung aktif begitu pembayaran terkonfirmasi, tanpa perlu upload bukti transfer.
+            </div>
+          @endif
 
           <div class="field">
             <label>Nama Lengkap</label>

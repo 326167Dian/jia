@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -61,9 +62,18 @@ class GdcPayService
 
         $response = $this->post($path, $body, $timestamp);
 
+        $qrContent = $response['qrContent'] ?? $response['qrUrl'] ?? $response['additionalInfo']['qrContent'] ?? '';
+
+        if ($qrContent === '') {
+            // GDC menjawab sukses tapi tanpa isi QR — tampilkan jawabannya agar mudah dicek.
+            Log::warning('gdcpay.generate_qr_empty', ['response' => $response]);
+
+            throw new \RuntimeException('GDC Pay tidak mengirim isi QR. Jawaban GDC: '.json_encode($response, JSON_UNESCAPED_SLASHES));
+        }
+
         return [
             'reference_no' => $partnerReferenceNo,
-            'qr_content' => $response['qrContent'] ?? $response['qrUrl'] ?? '',
+            'qr_content' => $qrContent,
             'gdc_reference_no' => $response['referenceNo'] ?? null,
         ];
     }
@@ -102,10 +112,12 @@ class GdcPayService
 
     protected function post(string $path, array $body, string $timestamp): array
     {
-        $signature = $this->signBody('POST', $path, $body, $timestamp);
+        $accessToken = $this->getAccessToken();
+        $signature = $this->signBody('POST', $path, $body, $accessToken, $timestamp);
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer '.$accessToken,
             'X-TIMESTAMP' => $timestamp,
             'X-SIGNATURE' => $signature,
             'X-PARTNER-ID' => config('gdcpay.partner_id'),
@@ -121,19 +133,76 @@ class GdcPayService
                 'body' => $response->body(),
             ]);
 
-            throw new \RuntimeException('Permintaan ke GDC Pay gagal ('.$response->status().').');
+            throw new \RuntimeException('Permintaan ke GDC Pay gagal ('.$response->status().') di '.$path.': '.Str::limit($response->body(), 500));
         }
 
         return $response->json() ?? [];
     }
 
-    protected function signBody(string $method, string $path, array $body, string $timestamp): string
+    protected function signBody(string $method, string $path, array $body, string $accessToken, string $timestamp): string
     {
         $minifiedBody = json_encode($body, JSON_UNESCAPED_SLASHES);
         $bodyHash = hash('sha256', $minifiedBody);
 
-        $stringToSign = sprintf('%s:%s:%s:%s:%s', $method, $path, '', $bodyHash, $timestamp);
+        $stringToSign = sprintf('%s:%s:%s:%s:%s', $method, $path, $accessToken, $bodyHash, $timestamp);
 
         return base64_encode(hash_hmac('sha512', $stringToSign, config('gdcpay.client_secret'), true));
+    }
+
+    /**
+     * Ambil Access Token B2B (SNAP), di-cache sesuai expiresIn dari GDC.
+     */
+    protected function getAccessToken(): string
+    {
+        return Cache::remember('gdcpay.access_token', 800, function () {
+            $path = '/snap/v1.0/access-token/b2b';
+            $timestamp = now()->toIso8601String();
+            $signature = $this->signAsymmetric(trim((string) config('gdcpay.client_key')), $timestamp);
+
+            $clientKey = trim((string) config('gdcpay.client_key'));
+
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'X-Timestamp' => $timestamp,
+                'Client-Key' => $clientKey,
+                // Nama header standar SNAP BI — dikirim juga untuk berjaga-jaga.
+                'X-CLIENT-KEY' => $clientKey,
+                'X-Signature' => $signature,
+            ])->post($this->baseUrl.$path, ['grantType' => 'client_credentials']);
+
+            if ($response->failed() || ! filled($response->json('accessToken'))) {
+                Log::warning('gdcpay.access_token_failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                throw new \RuntimeException('Gagal mengambil Access Token GDC Pay ('.$response->status().'): '.Str::limit($response->body(), 500));
+            }
+
+            return $response->json('accessToken');
+        });
+    }
+
+    /**
+     * Signature asymmetric (RSA-SHA256) untuk Access Token B2B, pakai private key client.
+     */
+    protected function signAsymmetric(string $clientKey, string $timestamp): string
+    {
+        $privateKeyPath = config('gdcpay.private_key_path');
+
+        if (! is_string($privateKeyPath) || ! is_file($privateKeyPath)) {
+            throw new \RuntimeException('Private key GDC Pay tidak ditemukan di '.$privateKeyPath);
+        }
+
+        $privateKey = openssl_pkey_get_private(file_get_contents($privateKeyPath));
+
+        if ($privateKey === false) {
+            throw new \RuntimeException('Private key GDC Pay tidak valid.');
+        }
+
+        $stringToSign = $clientKey.'|'.$timestamp;
+        openssl_sign($stringToSign, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+
+        return base64_encode($signature);
     }
 }
