@@ -27,6 +27,12 @@ class QrisPaymentController extends Controller
 
         $pricing = PromoPricing::calculate($data['billing_period'], $data['voucher_code'] ?? null);
 
+        // GDC menolak nominal di bawah ini (500 Internal Server Error, bukan pesan validasi yang jelas).
+        // Form sudah mengarahkan nominal segini ke jalur QRIS Statis (promo.store); ini jaga-jaga saja.
+        if ($pricing['final'] < config('gdcpay.min_amount', 10000)) {
+            return back()->withInput()->with('error', 'Nominal ini di bawah minimum QRIS otomatis. Silakan gunakan QRIS Statis / transfer manual.');
+        }
+
         $reseller = ! empty($data['referral_code'])
             ? Reseller::where('id', $data['referral_code'])->where('is_active', true)->first()
             : null;
@@ -55,6 +61,7 @@ class QrisPaymentController extends Controller
             $payment->update([
                 'qr_content' => $result['qr_content'],
                 'gdc_reference_no' => $result['gdc_reference_no'],
+                'external_id' => $result['external_id'],
             ]);
         } catch (\Throwable $e) {
             $payment->delete();
@@ -98,7 +105,7 @@ class QrisPaymentController extends Controller
         // Throttle upstream polling to at most once per 3 seconds per payment.
         if (! $payment->last_checked_at || $payment->last_checked_at->diffInSeconds(now()) >= 3) {
             try {
-                $result = $this->gdcPay->queryQr($payment->reference_no, $payment->gdc_reference_no);
+                $result = $this->gdcPay->queryQr($payment->reference_no, $payment->gdc_reference_no, $payment->external_id);
                 $payment->update(['last_checked_at' => now()]);
 
                 if (in_array($result['status'], ['success', 'paid', '00'], true)) {

@@ -45,8 +45,7 @@ class GdcPayService
             throw new \RuntimeException('Kredensial GDC Pay belum diisi.');
         }
 
-        $path = '/snap/v1.0/qr/qr-mpm-generate';
-        $timestamp = now()->toIso8601String();
+        $path = '/v1.0/qr/qr-mpm-generate';
 
         $body = [
             'partnerReferenceNo' => $partnerReferenceNo,
@@ -60,7 +59,7 @@ class GdcPayService
             ],
         ];
 
-        $response = $this->post($path, $body, $timestamp);
+        ['response' => $response, 'external_id' => $externalId] = $this->postWithRetry($path, $body);
 
         $qrContent = $response['qrContent'] ?? $response['qrUrl'] ?? $response['additionalInfo']['qrContent'] ?? '';
 
@@ -75,6 +74,8 @@ class GdcPayService
             'reference_no' => $partnerReferenceNo,
             'qr_content' => $qrContent,
             'gdc_reference_no' => $response['referenceNo'] ?? null,
+            // Disimpan supaya queryQr() berikutnya bisa mengirim originalExternalId yang sama.
+            'external_id' => $externalId,
         ];
     }
 
@@ -83,22 +84,22 @@ class GdcPayService
      *
      * @return array{status:string,paid_amount:?int,description:?string}
      */
-    public function queryQr(string $partnerReferenceNo, ?string $gdcReferenceNo = null): array
+    public function queryQr(string $partnerReferenceNo, ?string $gdcReferenceNo, string $originalExternalId): array
     {
         if (! $this->isConfigured()) {
             throw new \RuntimeException('Kredensial GDC Pay belum diisi.');
         }
 
-        $path = '/snap/v1.0/qr/qr-mpm-query';
-        $timestamp = now()->toIso8601String();
+        $path = '/v1.0/qr/qr-mpm-query';
 
         $body = array_filter([
             'originalPartnerReferenceNo' => $partnerReferenceNo,
             'originalReferenceNo' => $gdcReferenceNo,
-            'merchantId' => config('gdcpay.merchant_id'),
+            'originalExternalId' => $originalExternalId,
+            'serviceCode' => '47',
         ]);
 
-        $response = $this->post($path, $body, $timestamp);
+        ['response' => $response] = $this->postWithRetry($path, $body);
 
         $status = strtolower($response['latestTransactionStatus'] ?? $response['transactionStatusDesc'] ?? 'pending');
         $paidAmount = isset($response['amount']['value']) ? (int) round((float) $response['amount']['value']) : null;
@@ -110,7 +111,35 @@ class GdcPayService
         ];
     }
 
-    protected function post(string $path, array $body, string $timestamp): array
+    /**
+     * GDC kadang membalas 500 Internal Server Error secara acak (bukan error di sisi kita).
+     * Coba ulang dengan X-EXTERNAL-ID baru tiap percobaan — GDC menolak ID yang dipakai ulang.
+     *
+     * @return array{response:array,external_id:string}
+     */
+    protected function postWithRetry(string $path, array $body, int $attempts = 3): array
+    {
+        for ($attempt = 1; $attempt <= $attempts; $attempt++) {
+            $externalId = (string) Str::uuid();
+
+            try {
+                return [
+                    'response' => $this->post($path, $body, now()->toIso8601String(), $externalId),
+                    'external_id' => $externalId,
+                ];
+            } catch (\RuntimeException $e) {
+                $isServerError = (bool) preg_match('/gagal \(5\d\d\)/', $e->getMessage());
+
+                if (! $isServerError || $attempt === $attempts) {
+                    throw $e;
+                }
+
+                usleep(400_000);
+            }
+        }
+    }
+
+    protected function post(string $path, array $body, string $timestamp, string $externalId): array
     {
         $accessToken = $this->getAccessToken();
         $signature = $this->signBody('POST', $path, $body, $accessToken, $timestamp);
@@ -121,10 +150,10 @@ class GdcPayService
             'X-TIMESTAMP' => $timestamp,
             'X-SIGNATURE' => $signature,
             'X-PARTNER-ID' => config('gdcpay.partner_id'),
-            'X-EXTERNAL-ID' => (string) Str::uuid(),
+            'X-EXTERNAL-ID' => $externalId,
             'CHANNEL-ID' => config('gdcpay.channel_id'),
             'Client-Key' => config('gdcpay.client_key'),
-        ])->post($this->baseUrl.$path, $body);
+        ])->post($this->baseUrl.'/snap'.$path, $body);
 
         if ($response->failed()) {
             Log::warning('gdcpay.request_failed', [

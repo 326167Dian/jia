@@ -110,10 +110,33 @@
               Akun akan diverifikasi oleh admin setelah bukti transfer diterima.
             </div>
           @else
-            <div class="bank-box">
-              Pembayaran akan diproses otomatis lewat QRIS ({{ $setting->payment_method === 'gdcpay' ? 'GDC Pay' : 'Midtrans' }}).<br>
-              Setelah klik tombol di bawah, Anda akan diarahkan ke halaman QR — akun langsung aktif begitu pembayaran terkonfirmasi, tanpa perlu upload bukti transfer.
-            </div>
+            @if ($setting->payment_method === 'gdcpay')
+              {{-- Nominal di bawah minimum GDC (lihat config/gdcpay.php) tidak bisa lewat QRIS otomatis,
+                   jadi form ini otomatis beralih ke jalur QRIS Statis via JS (lihat updateGdcFallback). --}}
+              <div class="bank-box" id="gdc-auto-note">
+                Pembayaran akan diproses otomatis lewat QRIS (GDC Pay).<br>
+                Setelah klik tombol di bawah, Anda akan diarahkan ke halaman QR — akun langsung aktif begitu pembayaran terkonfirmasi, tanpa perlu upload bukti transfer.
+              </div>
+              <div id="gdc-fallback-block" style="display:none">
+                @if ($qrisImageUrl)
+                  <div class="qris-box">
+                    <img src="{{ $qrisImageUrl }}" alt="QRIS MySIFA">
+                    <div class="hint">Scan QRIS di atas pakai aplikasi e-wallet / m-banking Anda.</div>
+                  </div>
+                @endif
+                <div class="bank-box">
+                  Nominal ini di bawah minimum QRIS otomatis. Upload bukti transfer sesuai nominal di atas.<br>
+                  Atau transfer ke rekening berikut:<br>
+                  <b>{{ $setting->bank_name }} {{ $setting->bank_account }} a/n {{ $setting->bank_holder }}</b><br>
+                  Akun akan diverifikasi oleh admin setelah bukti transfer diterima.
+                </div>
+              </div>
+            @else
+              <div class="bank-box">
+                Pembayaran akan diproses otomatis lewat QRIS (Midtrans).<br>
+                Setelah klik tombol di bawah, Anda akan diarahkan ke halaman QR — akun langsung aktif begitu pembayaran terkonfirmasi, tanpa perlu upload bukti transfer.
+              </div>
+            @endif
           @endif
 
           <div class="field">
@@ -155,9 +178,15 @@
               <input type="file" name="proof" accept=".jpg,.jpeg,.png,.webp" required>
               <div class="hint">Format gambar: JPG, JPEG, PNG, WEBP. Maksimal 5MB.</div>
             </div>
+          @elseif ($setting->payment_method === 'gdcpay')
+            <div class="field" id="gdc-proof-field" style="display:none">
+              <label>Upload Bukti Transfer</label>
+              <input type="file" name="proof" id="gdc-proof-input" accept=".jpg,.jpeg,.png,.webp">
+              <div class="hint">Format gambar: JPG, JPEG, PNG, WEBP. Maksimal 5MB.</div>
+            </div>
           @endif
 
-          <button type="submit" class="submit-btn">
+          <button type="submit" class="submit-btn" id="submit-btn">
             {{ $setting->payment_method === 'qris_static' ? 'Daftar & Ambil Promo' : 'Lanjut ke Pembayaran QRIS' }}
           </button>
         </form>
@@ -185,6 +214,31 @@
 
     let currentPeriod = 'yearly';
 
+    // --- Fallback otomatis ke QRIS Statis kalau nominal di bawah minimum GDC ---
+    const isGdcMode = {{ $setting->payment_method === 'gdcpay' ? 'true' : 'false' }};
+    const gdcMinAmount = {{ (int) $gdcMinAmount }};
+    const promoForm = document.querySelector('form');
+    const qrisCreateUrl = @json(route('promo.qris.create'));
+    const promoStoreUrl = @json(route('promo.store'));
+    const gdcAutoNote = document.getElementById('gdc-auto-note');
+    const gdcFallbackBlock = document.getElementById('gdc-fallback-block');
+    const gdcProofField = document.getElementById('gdc-proof-field');
+    const gdcProofInput = document.getElementById('gdc-proof-input');
+    const submitBtn = document.getElementById('submit-btn');
+
+    function updateGdcFallback(amount) {
+      if (! isGdcMode) return;
+
+      const useFallback = amount < gdcMinAmount;
+
+      promoForm.action = useFallback ? promoStoreUrl : qrisCreateUrl;
+      gdcAutoNote.style.display = useFallback ? 'none' : '';
+      gdcFallbackBlock.style.display = useFallback ? '' : 'none';
+      gdcProofField.style.display = useFallback ? '' : 'none';
+      gdcProofInput.required = useFallback;
+      submitBtn.textContent = useFallback ? 'Daftar & Ambil Promo' : 'Lanjut ke Pembayaran QRIS';
+    }
+
     function formatRp(n) {
       return 'Rp ' + n.toLocaleString('id-ID');
     }
@@ -194,6 +248,7 @@
         <div class="label">Total Pembayaran</div>
         <div class="value" id="amount-value">${formatRp(periodAmounts[currentPeriod])}</div>
       `;
+      updateGdcFallback(periodAmounts[currentPeriod]);
     }
 
     function applyPeriod(period) {
@@ -214,6 +269,8 @@
         voucherDisabledNote.style.display = 'none';
       }
     }
+
+    updateGdcFallback(periodAmounts[currentPeriod]);
 
     periodRadios.forEach((radio) => {
       radio.addEventListener('change', () => applyPeriod(radio.value));
@@ -254,6 +311,7 @@
             <div class="original">Rp ${originalAmount.toLocaleString('id-ID')}</div>
             <div class="value discounted">${formatRp(data.final_amount)}</div>
           `;
+          updateGdcFallback(data.final_amount);
         } else {
           voucherMsg.textContent = data.message;
           voucherMsg.classList.add('err');

@@ -10,4 +10,6 @@ return [
     'account_number' => env('GDCPAY_ACCOUNT_NUMBER'),
     'channel_id' => env('GDCPAY_CHANNEL_ID', ''),
     'qr_expiry_minutes' => (int) env('GDCPAY_QR_EXPIRY_MINUTES', 15),
+    // Nominal di bawah ini selalu ditolak GDC (500 Internal Server Error, bukan pesan validasi yang jelas).
+    'min_amount' => (int) env('GDCPAY_MIN_AMOUNT', 10000),
 ];

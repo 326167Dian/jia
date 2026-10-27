@@ -21,6 +21,7 @@ class PromoOrderController extends Controller
             'setting' => $setting,
             'referralCode' => $request->session()->get('referral_reseller_id'),
             'qrisImageUrl' => $setting->qris_image_path ? route('media.show', $setting->qris_image_path) : null,
+            'gdcMinAmount' => config('gdcpay.min_amount', 10000),
         ]);
     }
 
