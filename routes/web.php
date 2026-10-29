@@ -116,8 +116,8 @@ Route::prefix('reseller')->name('reseller.')->group(function () {
     });
 });
 
-// Link referral pendek: /r/{id} — simpan kode referral ke session lalu arahkan ke form promo.
-Route::get('/r/{reseller}', function (Reseller $reseller) {
+// Link referral pendek: /{id} — simpan kode referral ke session lalu arahkan ke form promo.
+Route::get('/{reseller}', function (Reseller $reseller) {
     if ($reseller->is_active) {
         session(['referral_reseller_id' => $reseller->id]);
     }
