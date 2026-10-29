@@ -116,15 +116,6 @@ Route::prefix('reseller')->name('reseller.')->group(function () {
     });
 });
 
-// Link referral pendek: /{id} — simpan kode referral ke session lalu arahkan ke form promo.
-Route::get('/{reseller}', function (Reseller $reseller) {
-    if ($reseller->is_active) {
-        session(['referral_reseller_id' => $reseller->id]);
-    }
-
-    return redirect()->route('promo.create');
-})->name('reseller.referral');
-
 // Admin backend
 Route::prefix('yusuf')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -161,3 +152,13 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
         Route::post('/reseller/{reseller}/order/{order}/komisi', [AdminResellerController::class, 'commission'])->name('resellers.commission');
     });
 });
+
+// Link referral pendek: /{id} — simpan kode referral ke session lalu arahkan ke form promo.
+// Diletakkan paling akhir supaya tidak menabrak path lain seperti /yusuf, /member, /reseller.
+Route::get('/{reseller}', function (Reseller $reseller) {
+    if ($reseller->is_active) {
+        session(['referral_reseller_id' => $reseller->id]);
+    }
+
+    return redirect()->route('promo.create');
+})->name('reseller.referral');
