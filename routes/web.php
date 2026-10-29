@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('mysifa-ecommerce');
-});
+})->name('home');
 
 Route::get('/welcome', function () {
     return view('welcome');
@@ -153,12 +153,13 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
     });
 });
 
-// Link referral pendek: /{id} — simpan kode referral ke session lalu arahkan ke form promo.
+// Link referral pendek: /{id} — simpan kode referral ke session lalu arahkan ke halaman info
+// produk dulu (tombol "Ambil Promo" di sana baru lanjut ke form pembayaran).
 // Diletakkan paling akhir supaya tidak menabrak path lain seperti /yusuf, /member, /reseller.
 Route::get('/{reseller}', function (Reseller $reseller) {
     if ($reseller->is_active) {
         session(['referral_reseller_id' => $reseller->id]);
     }
 
-    return redirect()->route('promo.create');
+    return redirect()->route('home');
 })->name('reseller.referral');
