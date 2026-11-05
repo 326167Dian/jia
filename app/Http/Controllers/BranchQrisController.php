@@ -32,6 +32,14 @@ class BranchQrisController extends Controller
             'amount' => ['required', 'integer', 'min:1'],
         ]);
 
+        // GDC menolak nominal di bawah ini dengan 500 Internal Server Error (bukan
+        // pesan validasi yang jelas) -- ditemukan empiris lewat QrisPaymentController
+        // milik hub sendiri. Dicegat di sini supaya SEMUA cabang dapat pesan yang jelas.
+        $minAmount = (int) config('gdcpay.min_amount', 10000);
+        if ($data['amount'] < $minAmount) {
+            return response()->json(['message' => 'Nominal di bawah minimum QRIS GDC Pay (Rp'.number_format($minAmount, 0, ',', '.').').'], 422);
+        }
+
         if (BranchQrisPayment::where('branch_id', $branch->id)
             ->where('branch_reference_no', $data['branch_reference_no'])
             ->exists()) {
