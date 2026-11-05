@@ -19,6 +19,12 @@ class EnsureBranchKey
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Endpoint ini murni API server-to-server -- paksa respons JSON (termasuk
+        // pesan error validasi) apa pun Accept header si pemanggil, supaya tidak
+        // jatuh ke perilaku default Laravel untuk request non-JSON (redirect
+        // back ke halaman sebelumnya saat validasi gagal).
+        $request->headers->set('Accept', 'application/json');
+
         $key = (string) $request->header('X-Branch-Key', '');
 
         abort_if($key === '', 401, 'X-Branch-Key wajib diisi.');
