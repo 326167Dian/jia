@@ -27,6 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'webhooks/gdcpay/*',
             'webhooks/midtrans/*',
             'v1.0/access-token/b2b',
+            'api/branch/*',
+        ]);
+
+        $middleware->alias([
+            'branch.auth' => \App\Http\Middleware\EnsureBranchKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

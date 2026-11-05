@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ResellerController as AdminResellerController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Member\AuthController as MemberAuthController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
+use App\Http\Controllers\BranchQrisController;
 use App\Http\Controllers\GdcPayWebhookController;
 use App\Http\Controllers\InvoiceVerificationController;
 use App\Http\Controllers\MediaFileController;
@@ -83,6 +84,14 @@ Route::get('/promo/midtrans/{orderId}/status', [MidtransPaymentController::class
 Route::post('/webhooks/gdcpay/qris-notification', [GdcPayWebhookController::class, 'qrisNotification'])->name('gdcpay.webhook.qris');
 Route::post('/v1.0/access-token/b2b', [GdcPayWebhookController::class, 'issueAccessToken'])->name('gdcpay.webhook.token');
 Route::post('/webhooks/midtrans/notification', [MidtransWebhookController::class, 'notification'])->name('midtrans.webhook.notification');
+
+// API cabang (apotekberlian.my.id, dst.) -- lihat BranchQrisController. Hub ini
+// satu-satunya partner GDC terdaftar; cabang membuat/cek QRIS lewat sini,
+// bukan langsung ke GDC (GDC cuma izinkan 1 url callback per partner).
+Route::prefix('api/branch')->middleware('branch.auth')->group(function () {
+    Route::post('/qris/generate', [BranchQrisController::class, 'generate'])->name('branch.qris.generate');
+    Route::get('/qris/{referenceNo}/status', [BranchQrisController::class, 'status'])->name('branch.qris.status');
+});
 
 // Data apotek (diisi customer setelah pembayaran diverifikasi)
 Route::get('/data-apotek/{orderCode}', [PharmacyController::class, 'edit'])->name('pharmacy.edit');
