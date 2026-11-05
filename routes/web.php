@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -143,6 +144,9 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
             ->except(['show'])
             ->names('vouchers')
             ->parameters(['promo' => 'voucher']);
+
+        Route::resource('branches', BranchController::class)->except(['show']);
+        Route::post('/branches/{branch}/regenerate-key', [BranchController::class, 'regenerateKey'])->name('branches.regenerate-key');
 
         Route::get('/pembayaran', [PaymentSettingController::class, 'edit'])->name('payment.edit');
         Route::post('/pembayaran', [PaymentSettingController::class, 'update'])->name('payment.update');

@@ -106,6 +106,12 @@
                             <span class="nav-menu-item-title">Promo</span>
                         </a>
                     </li>
+                    <li class="nav-menu-item {{ request()->routeIs('admin.branches.*') ? 'router-link-active' : '' }}">
+                        <a href="{{ route('admin.branches.index') }}">
+                            <i class="feather icon-git-branch"></i>
+                            <span class="nav-menu-item-title">Cabang QRIS</span>
+                        </a>
+                    </li>
                     <li class="nav-menu-item {{ request()->routeIs('admin.payment.*') ? 'router-link-active' : '' }}">
                         <a href="{{ route('admin.payment.edit') }}">
                             <i class="feather icon-credit-card"></i>
