@@ -152,6 +152,10 @@ Route::prefix('yusuf')->name('admin.')->group(function () {
         Route::post('/pembayaran', [PaymentSettingController::class, 'update'])->name('payment.update');
 
         Route::get('/customer', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/customer/create', [CustomerController::class, 'create'])->name('customers.create');
+        Route::post('/customer', [CustomerController::class, 'store'])->name('customers.store');
+        Route::get('/customer/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+        Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('customers.update');
 
         Route::get('/profil', [AdminProfileController::class, 'edit'])->name('profile.edit');
         Route::post('/profil', [AdminProfileController::class, 'update'])->name('profile.update');

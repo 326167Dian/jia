@@ -5,7 +5,12 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <h5 class="mb-3">Data Customer</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Data Customer</h5>
+                <a href="{{ route('admin.customers.create') }}" class="btn btn-primary">
+                    <i class="feather icon-plus"></i> Tambah
+                </a>
+            </div>
             <div class="table-responsive">
                 <table class="table table-hover" id="customers-table">
                     <thead>
@@ -62,6 +67,9 @@
                                     <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#customerModal" data-customer='@json($detail)'>
                                         <i class="feather icon-eye"></i> Detail
                                     </button>
+                                    <a href="{{ route('admin.customers.edit', $customer) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="feather icon-edit-2"></i> Edit
+                                    </a>
                                     @if ($customer->status === 'verified')
                                         @php
                                             $dataApotekUrl = route('pharmacy.edit', $customer->order_code);
