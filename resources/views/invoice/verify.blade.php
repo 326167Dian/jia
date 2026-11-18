@@ -34,7 +34,8 @@
         <div class="row-item"><span>Nama Pemilik</span><span>{{ $order->pharmacy->nama_pemilik }}</span></div>
         <div class="row-item"><span>Total Pembayaran</span><span>Rp {{ number_format($order->final_amount, 0, ',', '.') }}</span></div>
         <div class="row-item"><span>Tanggal</span><span>{{ $order->created_at->format('d/m/Y') }}</span></div>
-        <p class="desc">Invoice ini tercatat resmi di sistem MySIFA dan tidak dipalsukan.</p>
+        <div class="row-item"><span>Masa Berlaku</span><span>{{ $order->contractPeriodLabel() }}</span></div>
+        <p class="desc">Invoice ini tercatat resmi di sistem MySIFA dan tidak dipalsukan. Masa berlaku paket {{ $order->billingPeriodLabel() }} dihitung sejak invoice diterbitkan, kecuali ada perjanjian tambahan.</p>
       @else
         <div class="ico">❌</div>
         <h1 class="bad">Invoice Tidak Ditemukan</h1>

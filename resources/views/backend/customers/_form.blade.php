@@ -35,12 +35,13 @@
 <div class="row">
     <div class="col-md-6">
         <div class="form-group mb-3">
-            <label class="form-label">Paket</label>
+            <label class="form-label">Jangka Waktu Kontrak</label>
             <select name="billing_period" class="form-control @error('billing_period') is-invalid @enderror" required>
-                <option value="yearly" {{ old('billing_period', $c->billing_period ?? 'yearly') === 'yearly' ? 'selected' : '' }}>Tahunan</option>
-                <option value="monthly" {{ old('billing_period', $c->billing_period ?? '') === 'monthly' ? 'selected' : '' }}>Bulanan</option>
+                <option value="yearly" {{ old('billing_period', $c->billing_period ?? 'yearly') === 'yearly' ? 'selected' : '' }}>Tahunan (1 tahun)</option>
+                <option value="monthly" {{ old('billing_period', $c->billing_period ?? '') === 'monthly' ? 'selected' : '' }}>Bulanan (1 bulan)</option>
             </select>
             @error('billing_period') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            <div class="form-text">Menentukan masa berlaku di invoice: dihitung sejak invoice diterbitkan selama 1 tahun/bulan, kecuali ada perjanjian tambahan.</div>
         </div>
     </div>
     <div class="col-md-6">

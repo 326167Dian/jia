@@ -94,6 +94,7 @@
                     INVOICE #{{ $order->order_code }}
                 </h1>
                 <p class="text-xs text-gray-500 mt-1" contenteditable="false">Tanggal: {{ $order->created_at->format('d/m/Y') }}</p>
+                <p class="text-xs text-gray-500 mt-1" contenteditable="false">Masa Berlaku: {{ $order->contractPeriodLabel() }}</p>
             </div>
 
             <div class="text-left md:text-left">
@@ -158,6 +159,7 @@
             <ul class="list-disc list-inside space-y-1.5 leading-relaxed font-normal">
                 <li contenteditable="false">semua update fitur yang di release mysifa gratis</li>
                 <li contenteditable="false">semua fitur yang diminta konsumen diadakan karena untuk menyesuaikan dengan kondisi bisnis apotek konsumen akan dikenakan biaya</li>
+                <li contenteditable="false">masa berlaku paket {{ $order->billingPeriodLabel() }} dimulai sejak invoice ini diterbitkan ({{ $order->created_at->format('d/m/Y') }}) selama {{ $order->billing_period === 'monthly' ? '1 bulan' : '1 tahun' }} hingga {{ $order->contractEndsAt()->format('d/m/Y') }}, kecuali ada perjanjian tambahan</li>
             </ul>
         </section>
 

@@ -62,6 +62,24 @@ class PromoOrder extends Authenticatable
         return $this->billing_period === 'monthly' ? 'Bulanan' : 'Tahunan';
     }
 
+    /**
+     * Masa berlaku kontrak dihitung dari tanggal invoice diterbitkan (created_at)
+     * ditambah 1 bulan/tahun sesuai paket -- bukan kolom tersendiri, karena aturan
+     * defaultnya selalu "sejak invoice terbit", kecuali ada perjanjian tambahan
+     * di luar sistem (dicatat manual, bukan lewat form ini).
+     */
+    public function contractEndsAt(): \Carbon\Carbon
+    {
+        return $this->billing_period === 'monthly'
+            ? $this->created_at->copy()->addMonth()
+            : $this->created_at->copy()->addYear();
+    }
+
+    public function contractPeriodLabel(): string
+    {
+        return $this->created_at->format('d/m/Y').' s.d. '.$this->contractEndsAt()->format('d/m/Y');
+    }
+
     public function isMemberAccountActive(): bool
     {
         return $this->status === 'verified' && ! empty($this->password);
